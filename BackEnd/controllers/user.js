@@ -9,6 +9,7 @@ exports.signup = (req, res, next) => {
             const email = req.body.email;
             const name = req.body.name;
             const password = hash;
+            const avatar = `${req.protocol}://${req.get('host')}/image/avatarDefault.png`;
            
             let sqlSignup;
             let values;
@@ -20,8 +21,8 @@ exports.signup = (req, res, next) => {
                 if(result.length > 0) {
                     return res.status(500).json({ error: "Adresse email déjà utilisée !" });
                 }
-                sqlSignup = "INSERT INTO users (name, email, password) VALUES (?, ?, ?)";
-                values = [name, email, password,];
+                sqlSignup = "INSERT INTO users (name, email, password, avatar) VALUES (?, ?, ?, ?)";
+                values = [name, email, password, avatar];
                 mysql.query(sqlSignup, values, function (err, result) {
                 if (err) {
                     return res.status(500).json(err.message);
@@ -41,7 +42,7 @@ exports.login = (req, res, next) => {
     let sqlFindUser;
 
     sqlFindUser = "SELECT userId, password FROM users WHERE email = ?";
-
+    
     mysql.query(sqlFindUser, [email], function (err, result) {
         if(err){
             return res.status(500).json(err.message);

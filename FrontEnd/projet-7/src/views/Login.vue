@@ -36,7 +36,7 @@
 </template>
 
 <script>
-
+import axios from 'axios'
 export default {
   name: 'login',
   data: function () {
@@ -133,13 +133,14 @@ export default {
       }
     },
     createAccount: function () {
-      window.axios.post('http://localhost:3000/api/auth/signup', {
+      axios
+      .post('http://localhost:3000/api/auth/signup', {
         name: this.prenom + ' ' + this.nom,
         email: this.email,
-        password: this.password
+        password: this.password,
+
       }).then(()=>{
-        console.log('Data envoyées');
-        this.$router.push("Profile");
+        this.sendToLogin()
       })
       .catch(()=>{
           let span = document.getElementById('message-erreur');
@@ -148,11 +149,18 @@ export default {
           console.log('Adresse email déjà utilisée');
       });
     },
+    updateData(data) {
+      // Stock les infos de connexion
+      this.email = data.email;
+      this.password = data.password;
+    },
     sendToLogin: function(){
-      window.axios.post('http://localhost:3000/api/auth/login', {
-        email: this.email,
-        password: this.password
-      }).then(()=>{
+      axios
+      .post('http://localhost:3000/api/auth/login',  this.$data)
+      .then((data)=>{
+        sessionStorage.setItem("token", data.data.token);
+        axios.defaults.headers.common["Authorization"] =
+            "Bearer " + data.data.token;
         console.log('Data envoyées');
         this.$router.push("Profile");
       })
@@ -160,7 +168,16 @@ export default {
       let span = document.getElementById("erreur-connexion");
       span.innerHTML = "Les informations que vous venez de rentrer sont incorrect";
       span.classList.add("text-danger");
+      sessionStorage.removeItem("token");
       });
+    }
+  },
+  mounted(){
+    if(localStorage.getItem('reload')){
+      localStorage.removeItem('reload');
+    } else {
+      localStorage.setItem('reload', 1);
+      window.location.reload();
     }
   }
 }

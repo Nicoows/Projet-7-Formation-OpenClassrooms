@@ -6,6 +6,9 @@ const bodyParser = require('body-parser');
 //const path = require('path');
 const dotenv = require("dotenv");
 const userRoutes = require('./routes/user');
+const profileRoutes = require('./routes/profile');
+const postRoutes = require('./routes/post');
+const path = require('path');
 
 const app = express();
 
@@ -24,11 +27,19 @@ app.use((req, res, next) => {
     next();
   });
 
+app.use('/image', express.static(path.join(__dirname, 'image')));
+
+app.use(express.urlencoded({ extended: true }));
+
 app.use(express.json());
 
 app.use(helmet());
 
 app.use("/api/auth", userRoutes);
+
+app.use("/api/profile", profileRoutes);
+
+app.use("/api", postRoutes);
 
 //app.use(limiter);
 

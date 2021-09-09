@@ -1,16 +1,142 @@
 <template>
-    <div> 
+<div>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-md">
+        <a class="navbar-brand" href="http://localhost:8080/Profile#/Post">Accueil</a>
+        <a class="navbar-brand" href="#" @click="disconnect()">Se déconnecter</a>
+    </div>
+    </nav>
+    <div class="profil"> 
         <h1>Votre profil</h1>
     </div>
+    <div class="card mb-3" style="width: 80%;">
+    <div class="row g-0">
+        <div class="col-md-4">
+        <img :src="user.avatar" class="img-fluid rounded-circle img-profil" alt="">
+        </div>
+        <div class="col-md-8">
+        <div class="card-body">
+            <h5 class="card-title" v-if="mode == 'profil'">{{this.name}}</h5>
+            <span v-if="mode == 'modify'">Nom et prénom:</span>
+            <input v-model="name" class="form-row__input" type="text" v-if="mode == 'modify'"/>
+            <p class="card-text" v-if="mode == 'profil'">{{this.description}}</p>
+            <div>
+                <p v-if="mode == 'modify'">Description:</p>
+                <textarea v-model="description" class="form-control" id="description" rows="3" v-if="mode == 'modify'"></textarea>
+            </div>
+            <span v-if="mode == 'modify'">Email:</span>
+            <input v-model="email" class="form-row__input mt-2" type="text" v-if="mode == 'modify'"/>
+            <div>
+                <span v-if="mode == 'modify'">Mot de passe:</span>
+                <input v-model="password" class="form-row__input mt-2" type="password" placeholder="Mot de passe actuel" v-if="mode == 'modify'"/>
+                <input v-model="newPassword" class="form-row__input mt-2" type="password" placeholder="Nouveau Mot de passe" v-if="mode == 'modify'"/>
+            </div>
+        </div>
+        </div>
+        <input type="file" id="avatar" name="avatar" accept="image/png, image/jpeg" v-if="mode == 'modify'">
+        <button type="button" class="btn btn-primary w-25 btn-valider" v-if="mode == 'modify'" @click="modifyUser(), switchToProfil()">valider</button>
+    </div>
+    <div class="box-btn">
+        <button type="button" class="btn btn-outline-dark btn-modif" @click="switchToModify()" v-if="mode =='profil'">Modifier son profil</button>
+        <button type="button" class="btn btn-outline-danger btn-delete" @click="deleteUser()" v-else>Supprimer son compte</button>
+    </div>
+    </div>
+</div>
 </template>
 
 <script>
+import axios from 'axios'
     export default {
-        name: 'Profile'
+        name: 'Profile',
+        data(){
+            return{
+                mode: 'profil',
+                user: '',
+                description: '',
+                name: '',
+                email: '',
+                newPassword: '',
+                avatarUrl: ''
+            }
+        },
+        
+        methods: {
+            switchToModify: function(){
+                this.mode = 'modify';
+            },
+            switchToProfil: function(){
+                this.mode = 'profil';
+            },
+            sendAvatar: function(){
+                axios
+                .get('http://localhost:3000/api/profile/profile', {
+                
+                }).then((data)=>{this.user = data.data[0];
+                this.name = this.user.name;
+                this.email = this.user.email;
+                this.description = this.user.description;
+                })
+                .catch(()=>{this.$router.push("/")});
+            },
+            disconnect: function(){
+                sessionStorage.removeItem("token");
+                this.$router.push("/");
+            },
+            deleteUser: function(){
+                axios
+                .delete('http://localhost:3000/api/profile/delete', {
+
+                }).then(() =>{
+                sessionStorage.removeItem("token");
+                this.$router.push("/");
+                })
+                .catch((error) => {console.log(error)});
+            },
+            modifyUser: function(){
+                console.log(document.getElementById("avatar").files[0]);
+                const formData = new FormData();
+                formData.append("description", this.description);
+                formData.append("name", this.name);
+                formData.append("email", this.email);
+                formData.append("password", this.password);
+                formData.append("newPassword", this.newPassword);
+                formData.append("avatar", document.getElementById("avatar").files[0]);
+                console.log(formData.values());
+                axios
+                .put('http://localhost:3000/api/profile/modify', formData)
+                .then(() => {console.log('description envoyé');})
+                .catch(() => {console.log('description non evnoyé');});
+            },
+        },
+        mounted(){
+            this.sendAvatar()
+        }
     }
 </script>
 
 <style>
-
+.profil{
+    text-align: center;
+    padding: 10px;
+}
+#avatar{
+    padding: 10px;
+}
+.btn-delete, .btn-modif{
+    width: 40%;
+    margin: 10px;
+}
+.box-btn{
+    display: flex;
+    justify-content: space-around;
+}
+.btn-valider{
+    margin-right: auto;
+    margin-left: auto;
+}
+.img-profil{
+    width: 80%;
+    margin: 10px;
+}
 </style>
 
