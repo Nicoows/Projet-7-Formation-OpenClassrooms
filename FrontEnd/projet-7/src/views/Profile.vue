@@ -18,23 +18,28 @@
         <div class="card-body">
             <h5 class="card-title" v-if="mode == 'profil'">{{this.name}}</h5>
             <span v-if="mode == 'modify'">Nom et prénom:</span>
-            <input v-model="name" class="form-row__input" type="text" v-if="mode == 'modify'"/>
+            <input v-model="name" class="form-row__input" type="text" v-if="mode == 'modify'" @change="regexNom()"/>
+            <span id="erreur-nom"></span>
             <p class="card-text" v-if="mode == 'profil'">{{this.description}}</p>
             <div>
                 <p v-if="mode == 'modify'">Description:</p>
                 <textarea v-model="description" class="form-control" id="description" rows="3" v-if="mode == 'modify'"></textarea>
+                <span id="erreur-desc"></span>
             </div>
             <span v-if="mode == 'modify'">Email:</span>
-            <input v-model="email" class="form-row__input mt-2" type="text" v-if="mode == 'modify'"/>
+            <input v-model="email" class="form-row__input mt-2" type="text" v-if="mode == 'modify'" @change="regexEmail()"/>
+            <span id="erreur-email"></span>
             <div>
                 <span v-if="mode == 'modify'">Mot de passe:</span>
-                <input v-model="password" class="form-row__input mt-2" type="password" placeholder="Mot de passe actuel" v-if="mode == 'modify'"/>
-                <input v-model="newPassword" class="form-row__input mt-2" type="password" placeholder="Nouveau Mot de passe" v-if="mode == 'modify'"/>
+                <input v-model="password" class="form-row__input mt-2" type="password" placeholder="Mot de passe actuel" v-if="mode == 'modify'" @change="regexPassword()"/>
+                <span id="erreur-mdr"></span>
+                <input v-model="newPassword" class="form-row__input mt-2" type="password" placeholder="Nouveau Mot de passe" v-if="mode == 'modify'" @change="regexPassword()"/>
+                <span id="erreur-mdr"></span>
             </div>
         </div>
         </div>
         <input type="file" id="avatar" name="avatar" accept="image/png, image/jpeg" v-if="mode == 'modify'">
-        <button type="button" class="btn btn-primary w-25 btn-valider" v-if="mode == 'modify'" @click="modifyUser(), switchToProfil()">valider</button>
+        <button type="button" class="btn btn-primary w-25 btn-valider" id="btn-valid-regex" v-if="mode == 'modify'" @click="modifyUser(), switchToProfil()">valider</button>
     </div>
     <div class="box-btn">
         <button type="button" class="btn btn-outline-dark btn-modif" @click="switchToModify()" v-if="mode =='profil'">Modifier son profil</button>
@@ -66,6 +71,78 @@ import axios from 'axios'
             },
             switchToProfil: function(){
                 this.mode = 'profil';
+            },
+            regexNom: function(){
+                let nomRegExp = new RegExp ("^([a-zàáâäçèéêëìíîïñòóôöùúûü]+(( |')[a-zàáâäçèéêëìíîïñòóôöùúûü]+)*)+([-]([a-zàáâäçèéêëìíîïñòóôöùúûü]+(( |')[a-zàáâäçèéêëìíîïñòóôöùúûü]+)*)+)*$", 'iu');
+
+                let testNom = nomRegExp.test(this.name);
+
+                let span = document.getElementById("erreur-nom");
+                let btn = document.getElementById("btn-valid-regex");
+
+                if(!testNom) {
+                    span.innerHTML = "Nom non valide";
+                    span.classList.remove("text-success");
+                    span.classList.add("text-danger");
+                    btn.classList.add("disabled");
+                } else {
+                    span.innerHTML = "";
+                    btn.classList.remove("disabled");
+                }
+            },
+            regexEmail: function(){
+                let emailRegExp = new RegExp ('^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$', 'g');
+
+                let testEmail = emailRegExp.test(this.email);
+
+                let span = document.getElementById("erreur-email");
+                let btn = document.getElementById("btn-valid-regex");
+
+                if(!testEmail) {
+                    span.innerHTML = "Email non valide";
+                    span.classList.remove("text-success");
+                    span.classList.add("text-danger");
+                    btn.classList.add("disabled");
+                } else {
+                    span.innerHTML = "";
+                    btn.classList.remove("disabled");
+                }
+            },
+            regexDesc: function(){
+                let descRegExp = new RegExp ('^[a-zA-Z0-9.-_]$', 'g');
+
+                let testDesc = descRegExp.test(this.desc);
+
+                let span = document.getElementById("erreur-desc");
+                let btn = document.getElementById("btn-valid-regex");
+
+                if(!testDesc) {
+                    span.innerHTML = "Email non valide";
+                    span.classList.remove("text-success");
+                    span.classList.add("text-danger");
+                    btn.classList.add("disabled");
+                } else {
+                    span.innerHTML = "";
+                    btn.classList.remove("disabled");
+                }
+            },
+            regexPassword: function(){
+                let passwordRegExp = new RegExp ('^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])([a-zA-Z0-9]{8,})$');
+
+                let testPassword = passwordRegExp.test(this.password);
+
+                let span = document.getElementById("erreur-mdp");
+                let btn = document.getElementById("btn-valid-regex");
+
+                if(!testPassword) {
+                    span.innerHTML = "Mot de passe requis : 8 caractères minimun. Au moins 1 Majuscule, 1 minuscule, 1 chiffre";
+                    span.classList.remove("text-success");
+                    span.classList.add("text-danger");
+                    btn.classList.add("disabled");
+                } else {
+                    span.innerHTML = "";
+                    btn.classList.remove("disabled");
+                }
             },
             sendAvatar: function(){
                 axios

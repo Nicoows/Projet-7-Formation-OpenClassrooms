@@ -26,7 +26,7 @@
         <span>Connexion</span>
       </button>
       <span id="erreur-connexion" v-if="mode == 'login'"></span>
-      <button class="btn btn-primary" :class="{'disabled' : !validatedFields}" @click="createAccount()" v-else>
+      <button class="btn btn-primary" :class="{'disabled' : !validatedFields}" id="btn-valid-regex" @click="createAccount()" v-else>
         <span>S'inscrire</span>
       </button>
       <span id="message-erreur" v-if="mode == 'create'"></span>
@@ -78,13 +78,16 @@ export default {
       let testNom = nomRegExp.test(this.nom);
 
       let span = document.getElementById("erreur-nom");
+      let btn = document.getElementById("btn-valid-regex");
 
       if(!testNom) {
           span.innerHTML = "Nom non valide";
           span.classList.remove("text-success");
           span.classList.add("text-danger");
+          btn.classList.add("disabled");
       } else {
         span.innerHTML = "";
+        btn.classList.remove("disabled");
       }
     },
     regexPrenom: function(){
@@ -93,13 +96,16 @@ export default {
       let testPrenom = prenomRegExp.test(this.prenom);
 
       let span = document.getElementById("erreur-prenom");
+      let btn = document.getElementById("btn-valid-regex");
 
       if(!testPrenom) {
           span.innerHTML = "Prénom non valide";
           span.classList.remove("text-success");
           span.classList.add("text-danger");
+          btn.classList.add("disabled");
       } else {
         span.innerHTML = "";
+        btn.classList.remove("disabled");
       }
     },
     regexEmail: function(){
@@ -108,13 +114,16 @@ export default {
       let testEmail = emailRegExp.test(this.email);
 
       let span = document.getElementById("erreur-email");
+      let btn = document.getElementById("btn-valid-regex");
 
       if(!testEmail) {
           span.innerHTML = "Email non valide";
           span.classList.remove("text-success");
           span.classList.add("text-danger");
+          btn.classList.add("disabled");
       } else {
         span.innerHTML = "";
+        btn.classList.remove("disabled");
       }
     },
     regexPassword: function(){
@@ -123,13 +132,16 @@ export default {
       let testPassword = passwordRegExp.test(this.password);
 
       let span = document.getElementById("erreur-mdp");
+      let btn = document.getElementById("btn-valid-regex");
 
       if(!testPassword) {
           span.innerHTML = "Mot de passe requis : 8 caractères minimun. Au moins 1 Majuscule, 1 minuscule, 1 chiffre";
           span.classList.remove("text-success");
           span.classList.add("text-danger");
+          btn.classList.add("disabled");
       } else {
         span.innerHTML = "";
+        btn.classList.remove("disabled");
       }
     },
     createAccount: function () {
@@ -186,13 +198,14 @@ export default {
 
 
 <style>
-  body{
+  body, html{
     background-color: gray;
+    display: grid;
   }
   .card{
     width: 25rem;
-    margin-left: auto;
-    margin-right: auto;
+    margin: auto;
+    top: 50%;
   }
   .btn{
     width: 100%;
