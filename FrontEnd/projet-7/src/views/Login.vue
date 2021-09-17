@@ -1,5 +1,6 @@
 <template>
-  <!--<img src="../assets/Logo-Groupomania/logo-left-font-monochrome-black.png" class="logo">-->
+<div class="boxdiv">
+<img src="../assets/Logo-Groupomania/logo-left-font-monochrome-black.png" class="logo">
   <div class="card text-center">
     <div class="card-body">
     <h1 class="card-title" v-if="mode == 'login'">Connexion</h1>
@@ -33,6 +34,7 @@
     </div>
     </div> 
   </div>
+</div>
 </template>
 
 <script>
@@ -199,8 +201,15 @@ export default {
 
 <style>
   body, html{
-    background-color: gray;
+    background-color: #A9A9A9;
     display: grid;
+  }
+  .boxdiv{
+    text-align: center;
+  }
+  .logo{
+    width: 30%;
+    margin-bottom: 30px;
   }
   .card{
     width: 25rem;

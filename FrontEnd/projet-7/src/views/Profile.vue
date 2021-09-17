@@ -10,10 +10,9 @@
         <h1>Votre profil</h1>
     </div>
     <div class="card mb-3" style="width: 80%;">
-    <div class="row g-0">
-        <div class="col-md-4">
+    <div class="row g-0 box-info-profil d-flex">
         <img :src="user.avatar" class="img-fluid rounded-circle img-profil" alt="">
-        </div>
+        <input type="file" id="avatar" name="avatar" accept="image/png, image/jpeg" v-if="mode == 'modify'">
         <div class="col-md-8">
         <div class="card-body">
             <h5 class="card-title" v-if="mode == 'profil'">{{this.name}}</h5>
@@ -36,10 +35,11 @@
                 <input v-model="newPassword" class="form-row__input mt-2" type="password" placeholder="Nouveau Mot de passe" v-if="mode == 'modify'" @change="regexPassword()"/>
                 <span id="erreur-mdr"></span>
             </div>
+            <div class="box-btn-valid">
+            <button type="button" class="btn btn-primary w-25 btn-valider" id="btn-valid-regex" v-if="mode == 'modify'" @click="modifyUser(), switchToProfil()">valider</button>
+            </div>
         </div>
         </div>
-        <input type="file" id="avatar" name="avatar" accept="image/png, image/jpeg" v-if="mode == 'modify'">
-        <button type="button" class="btn btn-primary w-25 btn-valider" id="btn-valid-regex" v-if="mode == 'modify'" @click="modifyUser(), switchToProfil()">valider</button>
     </div>
     <div class="box-btn">
         <button type="button" class="btn btn-outline-dark btn-modif" @click="switchToModify()" v-if="mode =='profil'">Modifier son profil</button>
@@ -61,7 +61,8 @@ import axios from 'axios'
                 name: '',
                 email: '',
                 newPassword: '',
-                avatarUrl: ''
+                avatarUrl: '',
+                admin: ''
             }
         },
         
@@ -184,9 +185,22 @@ import axios from 'axios'
                 .then(() => {console.log('description envoyé');})
                 .catch(() => {console.log('description non evnoyé');});
             },
+            getUserId: function(){
+                axios
+                .get('http://localhost:3000/api/auth/get/userId', {
+
+                })
+                .then((data)=>{
+                    this.userId = data.data[0].userId;
+                    this.admin = data.data[0].admin;
+                    console.log(this.userId, this.admin);
+                    })
+                .catch(()=>{console.log("userId pas récupéré")});
+            },
         },
         mounted(){
-            this.sendAvatar()
+            this.sendAvatar(),
+            this.getUserId()
         }
     }
 </script>
@@ -212,8 +226,29 @@ import axios from 'axios'
     margin-left: auto;
 }
 .img-profil{
-    width: 80%;
+    width: 25%;
     margin: 10px;
+}
+@media screen and (max-width: 426px)
+{
+    .img-profil{
+        width: 25%;
+    }
+    .box-info-profil{
+        display: flex;
+    }
+    .btn-modif{
+        width: 60%;
+    }
+    .btn-valider{
+        width: 40%!important;
+    }
+    .box-btn-valid{
+        text-align: center;
+    }
+    .btn-delete{
+        width: 70%!important;
+    }
 }
 </style>
 

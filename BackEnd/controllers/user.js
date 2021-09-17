@@ -3,6 +3,21 @@ const jwt = require('jsonwebtoken');
 const mysql = require('../dbconnect');
 const env = require("../.env");
 
+exports.getUserId = (req, res, next) => {
+    const userId = res.locals.userId;
+    
+    let sqlGetUserId;
+
+    sqlGetUserId = "SELECT userId, admin FROM users WHERE userId = ?";
+
+    mysql.query(sqlGetUserId, [userId], function(err, result){
+        if (err) {
+            return res.status(500).json(err.message);
+        }
+        res.status(200).json(result);
+    })
+}
+
 exports.signup = (req, res, next) => {
     bcrypt.hash(req.body.password, 10)
         .then(hash => {
@@ -56,6 +71,7 @@ exports.login = (req, res, next) => {
             if(!valid){
                 return res.status(402).json({ error: "Mot de passe incorrect !" });
             }
+            res.locals.admin = result[0].admin;
             res.status(200).json({
                 token: jwt.sign(
                     { userId: result[0].userId },

@@ -3,21 +3,6 @@ const mysql = require('../dbconnect');
 const env = require("../.env");
 const fs = require("fs");
 
-exports.getUserId = (req, res, next) => {
-    const userId = res.locals.userId;
-    
-    let sqlGetUserId;
-
-    sqlGetUserId = "SELECT userId FROM users WHERE userId = ?";
-
-    mysql.query(sqlGetUserId, [userId], function(err, result){
-        if (err) {
-            return res.status(500).json(err.message);
-        }
-        res.status(200).json(result);
-    })
-}
-
 exports.createPost = (req, res, next) => {
     const userId = res.locals.userId;
     
@@ -118,7 +103,7 @@ exports.getAllCom = (req, res, next) => {
 
     let sqlGetAllCom;
 
-    sqlGetAllCom = "SELECT comment, name, avatar, commentId, comUserId FROM comments LEFT JOIN users ON comments.comUserId = users.userId WHERE post_Id=?";
+    sqlGetAllCom = "SELECT comment, name, avatar, commentId, comUserId, post_Id FROM comments LEFT JOIN users ON comments.comUserId = users.userId WHERE post_Id = ?";
 
     mysql.query(sqlGetAllCom, [postId], function(err, result){
         if (err) {
