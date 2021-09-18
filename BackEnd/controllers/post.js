@@ -144,7 +144,7 @@ exports.deleteCom = (req, res, next) => {
     })
 }
 
-exports.dislike = (req, res, next) => {
+exports.like = (req, res, next) => {
     const userId = res.locals.userId;
     const postId = req.params.postId;
 
@@ -164,7 +164,6 @@ exports.dislike = (req, res, next) => {
                 }
                 res.status(200).json({message : "Like supprimé"});
             })
-            console.log(result);
             } else {
             let sqlAjoutLike;
 
@@ -176,7 +175,6 @@ exports.dislike = (req, res, next) => {
                 }
                 res.status(200).json({message : "Like ajouté"});
             })
-            console.log("erreur");
         }
 })
 }

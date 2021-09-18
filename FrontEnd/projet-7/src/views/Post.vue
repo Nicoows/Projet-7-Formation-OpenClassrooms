@@ -24,9 +24,7 @@
         <div class="well mt-2 box-post" v-for="item in posts" :key="item">
             <div class="">
                 <div class="box-img-nom">
-                <a class="w-25 lien-img" href="http://localhost:8080/Profile#/Profile">
-                    <img class="w-75 rounded-circle" :src=item.avatar>
-                </a>
+                    <img class="img-post rounded-circle" :src=item.avatar>
                 <div class="justify-content-between">
                         <p class="media-heading nom-post"><strong>{{item.name}}</strong></p>
                         <p class="date-post">{{item.datePost}}</p>
@@ -36,7 +34,7 @@
                     <p class="message-post"> {{item.message}} </p>
                     <img class="w-75" :src=item.image>
                     <ul class="list-inline d-flex">
-                        <li class="m-2 btn-like" id="spanLike" @click="like(item.postId)">{{numberLike[item.postId]}}  <i class="fas fa-thumbs-up"></i></li>
+                        <li class="m-2 btn-like" id="spanLike" @click="like(item.postId)" :key="numberLike">{{numberLike[item.postId]}}  <i class="fas fa-thumbs-up"></i></li>
                         <li class="m-2 btn-com" @click="getAllComment(item.postId)">{{numberCom[item.postId]}} Commentaires</li>
                     </ul>
                     <div>
@@ -98,7 +96,6 @@ import axios from 'axios'
                 .catch(()=>{console.log("userId pas récupéré")});
             },
             sendPost: function(){
-                //var imageUrl = document.getElementById("image").files[0];
                 const formData = new FormData();
                 formData.append("message", this.message);
                 formData.append("avatar", document.getElementById("image").files[0]);
@@ -209,7 +206,6 @@ import axios from 'axios'
             this.getNumberCom(),
             this.getUserId(),
             this.getNumberLike()
-            //this.getAllComment()
         }
         }
 </script>
@@ -247,6 +243,10 @@ img{
 .nom-post{
     margin-bottom: 0;
     margin-top: 5px;
+}
+.img-post{
+    width: 15%;
+    margin: 10px;
 }
 .message-post{
     margin-left: 5px;
