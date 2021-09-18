@@ -8,17 +8,19 @@ Installer MySQL
 Lancement du Backend et Frontend
 
 Dans le terminal, lancer les commandes suivantes sur chaques dossiers :
-icon du terminal	Pour installer Node
-(une seule fois)	Pour lancer le serveur
-Sur le dossier Back :	npm install	npm start
-Sur le dossier Front :	npm install	npm run serve
+
+Sur le dossier Back :	npm start
+
+Sur le dossier Front :	npm run serve
 
 Ouvrez votre navigateur et allez sur : http://localhost:8080
 
 Lancement de la base de données :
 
 -Installer XAMPP
+
 -Lancer les serveurs apache et mysql en appuyant sur start
+
 -Cliquer sur admin (à côté de mysql) pour ouvrir phpmyadmin pour gérer la base de données
 
 
