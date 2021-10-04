@@ -1,3 +1,7 @@
+Projet 7
+
+Ce projet consistait à effectuer un réseau social pour une entreprise permettant aux utilisateurs de publier un texte ou une image, de les commenter et de les liker. Les 2 parties, front-end et back-end était à réaliser avec une base de donnée MySQL. Pour le front-end, j'ai utilisé le frameworks vue.js et pour le back-end, j'ai utiliser node.js avec le frameworks express.js.
+
 🔨 Installation
 
 
